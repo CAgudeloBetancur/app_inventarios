@@ -1,4 +1,4 @@
-import UsuarioToken from "../models/UsuarioToken.js";
+import UsuarioToken from "../../models/UsuarioToken.js";
 import jwt from 'jsonwebtoken';
 import { config } from "dotenv";
 

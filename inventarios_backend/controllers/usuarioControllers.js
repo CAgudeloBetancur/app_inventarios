@@ -1,14 +1,11 @@
 import Usuario from "../models/Usuario.js";
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { config } from "dotenv";
-config();
 
 export const listarUsuarios = async () => {
   return await Usuario.find();
 }
 
-export const signUp = async (usuarioRequest) => {
+export const crearUsuario = async (usuarioRequest) => {
   const emailExistente = await Usuario.findOne({email: usuarioRequest.email});
   if(emailExistente) {
     throw Error('Este email ya existe');
@@ -22,25 +19,12 @@ export const signUp = async (usuarioRequest) => {
   return {_id: usuario._id, rol: usuario.rol};
 }
 
-export const logIn = async (usuarioRequest) => {
-  const user = await Usuario.findOne({email: usuarioRequest.email});
-  if(!user) throw Error('Email incorrecto');
-  const match = await bcrypt.compare(usuarioRequest.password, user.password);
-  if(!match) throw Error('Contraseña incorrecta');
-  return user;
-}
-
 export const editarUsuario = async (usuarioId, usuarioRequest) => {
   usuarioRequest.fechaActualizacion = new Date();
   await Usuario.findByIdAndUpdate(usuarioId, usuarioRequest);
 }
 
-export const refreshToken = async (userPayload) => {
-  console.log(userPayload)
-  const accessToken = jwt.sign(
-    userPayload, 
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10m"}
-  );
-  return accessToken;
+export const eliminarUsuario = async (id) => {
+  let usuarioEliminado = await Usuario.findByIdAndDelete(id);
+  return (usuarioEliminado !== null) ? {deleted: true} : {deleted: false};
 }

@@ -5,15 +5,17 @@ export const listarMarcas = async () => {
 }
 
 export const crearMarca = async (marcaRequest) => {
-  let marca = new Marca();
-  marca.nombre = marcaRequest.nombre;
-  marca.estado = marcaRequest.estado;
-  marca.fechaCreacion = new Date();
-  marca.fechaActualizacion = new Date();
-  await marca.save();
+  marcaRequest.fechaCreacion = new Date();
+  marcaRequest.fechaActualizacion = new Date();
+  await Marca.create(marcaRequest);
 }
 
 export const editarMarca = async (marcaId, marcaRequest) => {
   marcaRequest.fechaActualizacion = new Date();
   await Marca.findByIdAndUpdate(marcaId, marcaRequest);
+}
+
+export const eliminarMarca = async (id) => {
+  let marcaEliminada = await Marca.findByIdAndDelete(id);
+  return (marcaEliminada !== null) ? {deleted: true} : {deleted: false};
 }

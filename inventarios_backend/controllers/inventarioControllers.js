@@ -45,21 +45,9 @@ export const obtenerInventarioPorId = async (inventarioId) => {
 }
 
 export const crearInventario = async (inventarioRequest) => {
-    let inventario = new Inventario();
-    inventario.serial = inventarioRequest.serial;
-    inventario.modelo = inventarioRequest.modelo;
-    inventario.description = inventarioRequest.description;
-    inventario.foto = inventarioRequest.foto;
-    inventario.color = inventarioRequest.color;
-    inventario.fechaCompra = inventarioRequest.fechaCompra;
-    inventario.precio = inventarioRequest.precio;
-    inventario.usuario = inventarioRequest.usuario._id;
-    inventario.marca = inventarioRequest.marca._id;
-    inventario.tipoEquipo = inventarioRequest.tipoEquipo._id;
-    inventario.estadoEquipo = inventarioRequest.estadoEquipo._id;
-    inventario.fechaCreacion = new Date();
-    inventario.fechaActualizacion = new Date();
-    await inventario.save();
+    inventarioRequest.fechaCreacion = new Date();
+    inventarioRequest.fechaActualizacion = new Date();
+    await Inventario.create(inventarioRequest);
 }
 
 export const editarInventario = async (inventarioId, inventarioRequest) => {
@@ -67,3 +55,7 @@ export const editarInventario = async (inventarioId, inventarioRequest) => {
     await Inventario.findByIdAndUpdate(inventarioId, inventarioRequest);    
 }
 
+export const eliminarInventario = async (id) => {
+  let inventarioEliminado = await Inventario.findByIdAndDelete(id);
+  return (inventarioEliminado !== null) ? {deleted: true} : {deleted: false};
+}

@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { check } from 'express-validator';
 import { 
   listarMarcasHandler, 
   crearMarcaHandler, 
-  editarMarcaHandler 
+  editarMarcaHandler, 
+  eliminarMarcaHandler
   } from '../handlers/marcaHandlers.js';
+import { validacionesMetodoPostMarca, validacionesMetodoPutMarca } from '../validations/modelsRequests/validationsByModel/validarMarcaRequests.js';
+import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 
 const marcaRouter = Router();
 
@@ -16,22 +18,22 @@ marcaRouter.get('/', listarMarcasHandler);
 
 marcaRouter.post(
   '/',
-  [
-    check('nombre', 'nombre.required').not().isEmpty(),
-    check('estado', 'estado.required').isIn(['Activo', 'Inactivo'])
-  ],
+  validacionesMetodoPostMarca,
   crearMarcaHandler
 );
 
 // ? Actualizar una marca
 
 marcaRouter.put(
-  '/:marcaId',
-  [
-    check('nombre', 'nombre.requerido').not().isEmpty(),
-    check('estado', 'estado.requerido').isIn(['Activo','Inactivo'])
-  ],
+  '/:id',
+  validacionesMetodoPutMarca,
   editarMarcaHandler
+);
+
+marcaRouter.delete(
+  '/:id',
+  validarParametroIdEnUrl,
+  eliminarMarcaHandler
 );
 
 export default marcaRouter;

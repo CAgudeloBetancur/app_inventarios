@@ -1,51 +1,42 @@
 import { Router } from 'express';
-import { check } from 'express-validator';
 import { 
-  signUpHandler,
   editarUsuarioHandler,
   listarUsuariosHandler,
-  logInHandler,
-  refreshTokenHandler
+  crearUsuarioHandler,
+  eliminarUsuarioHandler
   } from '../handlers/usuarioHandlers.js';
-import { validarRolesUsuario } from '../validations/validarRolesUsuario.js';
-import { autenticacionRequerida } from '../validations/autenticacionRequerida.js';
+import { validacionesMetodoPostUsuario, validacionesMetodoPutUsuario } from '../validations/modelsRequests/validationsByModel/validarUsuarioRequests.js';
+import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 
 const usuarioRouter = Router();
 
 // ? Listado de usuarios
 
-usuarioRouter.get('/', autenticacionRequerida, validarRolesUsuario(["Administrador"]), listarUsuariosHandler);
+usuarioRouter.get(
+  '/', 
+  listarUsuariosHandler
+);
 
 // ? Crear un usuario nuevo
 
-// usuarioRouter.post(
-//   '/signup',
-//   [
-//     check('nombre', 'nombre.required').not().isEmpty(),
-//     check('email', 'email.required').isEmail(),
-//     check('estado', 'estado.required').isIn(['Activo', 'Inactivo'])
-//   ],
-//   signUpHandler
-// );
-
-usuarioRouter.post('/signup', signUpHandler);
-
-usuarioRouter.post('/signin', logInHandler);
-
-usuarioRouter.post('/refresh', refreshTokenHandler);
+usuarioRouter.post(
+  '/', 
+  validacionesMetodoPostUsuario,
+  crearUsuarioHandler
+);
 
 // ? Actualizar un usuario
 
 usuarioRouter.put(
-  '/:usuarioId',
-  autenticacionRequerida,
-  validarRolesUsuario(["Administrador"]),
-  [
-    check('nombre', 'nombre.required').not().isEmpty(),
-    check('email', 'email.required').isEmail(),
-    check('estado', 'estado.required').isIn(['Activo', 'Inactivo'])
-  ],
+  '/:id',
+  validacionesMetodoPutUsuario,
   editarUsuarioHandler
+);
+
+usuarioRouter.delete(
+  '/:id',
+  validarParametroIdEnUrl,
+  eliminarUsuarioHandler
 );
 
 export default usuarioRouter;

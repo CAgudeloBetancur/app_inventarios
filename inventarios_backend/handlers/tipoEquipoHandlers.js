@@ -1,7 +1,7 @@
-import { validationResult } from "express-validator";
 import { 
   crearTipoEquipo, 
   editarTipoEquipo, 
+  eliminarTipoEquipo, 
   listarTiposEquipo 
   } from "../controllers/tipoEquipoControllers.js";
 
@@ -17,12 +17,6 @@ export const listarTipoEquipoHandler = async (req, res) => {
 
 export const crearTipoEquipoHandler = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-      return res.status(400).json({
-        messages: errors.array()
-      });
-    }
     await crearTipoEquipo(req.body);
     return res.status(201).json({success: true});      
   } catch (error) {      
@@ -33,14 +27,22 @@ export const crearTipoEquipoHandler = async (req, res) => {
 
 export const editarTipoEquipoHandler = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-      return res.status(400).json({message: errors.array()});
-    }
-    await editarTipoEquipo(req.params.tipoEquipoId, req.body);
+    await editarTipoEquipo(req.params.id, req.body);
     return res.status(201).json({success: true});
   } catch (error) {
     console.log(error);
     return res.status(500).send('Ocurrio un error');
+  }
+}
+
+export const eliminarTipoEquipoHandler = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const result = await eliminarTipoEquipo(id);
+    if(!result.deleted) return res.status(400).json({error: "EstadoEquipo inexistente"});
+    return res.status(200).json(result);    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({error: "Algo salió mal"});
   }
 }

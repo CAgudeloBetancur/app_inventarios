@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { check } from 'express-validator';
 import { 
   editarTipoEquipoHandler, 
   crearTipoEquipoHandler, 
-  listarTipoEquipoHandler 
+  listarTipoEquipoHandler, 
+  eliminarTipoEquipoHandler
   } from '../handlers/tipoEquipoHandlers.js';
+import { validacionesMetodoPostTipoEquipo, validacionesMetodoPutTipoEquipo } from '../validations/modelsRequests/validationsByModel/validarTipoEquipoRequests.js';
+import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 
 const tipoEquipoRouter = Router();
 
@@ -16,22 +18,22 @@ tipoEquipoRouter.get('/', listarTipoEquipoHandler);
 
 tipoEquipoRouter.post(
   '/', 
-  [
-    check('nombre', 'nombre.requerido').not().isEmpty(),
-    check('estado', 'estado.requerido').isIn(['Activo', 'Inactivo'])
-  ],
+  validacionesMetodoPostTipoEquipo,
   crearTipoEquipoHandler
 );
 
 // ? Actualizar un tipo de equipo
 
 tipoEquipoRouter.put(
-  '/:tipoEquipoId',
-  [
-    check('nombre', 'nombre.requerido').not().isEmpty(),
-    check('estado', 'estado.requerido').isIn(['Activo','Inactivo'])
-  ],
+  '/:id',
+  validacionesMetodoPutTipoEquipo,
   editarTipoEquipoHandler
+);
+
+tipoEquipoRouter.delete(
+  '/:id',
+  validarParametroIdEnUrl,
+  eliminarTipoEquipoHandler
 );
 
 export default tipoEquipoRouter;

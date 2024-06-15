@@ -5,17 +5,17 @@ export const listarEstadosEquipo = async () => {
 }
 
 export const crearEstadoEquipo = async (estadoEquipoRequest) => {
-    let estadoEquipo = new EstadoEquipo();
-    estadoEquipo.nombre = estadoEquipoRequest.nombre;
-    estadoEquipo.estado = estadoEquipoRequest.estado;
-    estadoEquipo.fechaCreacion = new Date();
-    estadoEquipo.fechaActualizacion = new Date();
-    await estadoEquipo.save();
+    estadoEquipoRequest.fechaCreacion = new Date();
+    estadoEquipoRequest.fechaActualizacion = new Date();
+    await EstadoEquipo.create(estadoEquipoRequest);
 }
 
-export const editarEstadoEquipo = async (estadoEquipoFromDb, estadoEquipoRequest) => {
-  estadoEquipoFromDb.nombre = estadoEquipoRequest.nombre;
-  estadoEquipoFromDb.estado = estadoEquipoRequest.estado;
-  estadoEquipoFromDb.fechaActualizacion = new Date();
-  await estadoEquipoFromDb.save();
+export const editarEstadoEquipo = async (estadoEquipoId, estadoEquipoRequest) => {
+  estadoEquipoRequest.fechaActualizacion = new Date();
+  await EstadoEquipo.findByIdAndUpdate(estadoEquipoId, estadoEquipoRequest);
+}
+
+export const eliminarEstadoEquipo = async (id) => {
+  let estadoEquipoEliminado = await EstadoEquipo.findByIdAndDelete(id);
+  return (estadoEquipoEliminado !== null) ? {deleted: true} : {deleted: false};
 }

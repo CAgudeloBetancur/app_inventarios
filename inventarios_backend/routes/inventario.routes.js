@@ -2,27 +2,57 @@ import { Router } from 'express';
 import { 
   crearInventarioHandler, 
   editarInventarioHandler, 
+  eliminarInventarioHandler, 
   listarInventariosHandler, 
   obtenerInventarioPorIdHandler 
   } from '../handlers/inventarioHandlers.js';
-import { validarRolesUsuario } from '../validations/validarRolesUsuario.js';
+import { validarRolesUsuario } from '../validations/auth/validarRolesUsuario.js';
+import { 
+  validacionesMetodoPutInventario, 
+  validacionesMetodoPostInventario 
+  } from '../validations/modelsRequests/validationsByModel/validarInventarioRequests.js';
+import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 
 const inventarioRouter = Router();
 
 // ? Lista de todos los inventarios
 
-inventarioRouter.get('/', validarRolesUsuario(["Administrador", "Docente"]),listarInventariosHandler);
+inventarioRouter.get(
+  '/', 
+  validarRolesUsuario(["Administrador", "Docente"]),
+  listarInventariosHandler
+);
+
+inventarioRouter.use( validarRolesUsuario(["Administrador"]) )
 
 // ? inventario por Id
 
-inventarioRouter.get('/:inventarioId', validarRolesUsuario(["Administrador", "Docente"]), obtenerInventarioPorIdHandler);
+inventarioRouter.get(
+  '/:id', 
+  validarParametroIdEnUrl,
+  obtenerInventarioPorIdHandler
+);
 
 // ? Crear un inventario
 
-inventarioRouter.post('/', validarRolesUsuario(["Administrador"]), crearInventarioHandler);
+inventarioRouter.post(
+  '/',  
+  validacionesMetodoPostInventario,
+  crearInventarioHandler
+);
 
 // ? Actualizar un inventario
 
-inventarioRouter.put('/:inventarioId', validarRolesUsuario(["Administrador"]), editarInventarioHandler);
+inventarioRouter.put(
+  '/:id', 
+  validacionesMetodoPutInventario,
+  editarInventarioHandler
+);
+
+inventarioRouter.delete(
+  '/:id',
+  validarParametroIdEnUrl,
+  eliminarInventarioHandler
+);
 
 export default inventarioRouter;

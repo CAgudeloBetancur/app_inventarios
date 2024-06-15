@@ -5,15 +5,17 @@ export const listarTiposEquipo = async () => {
 }
 
 export const crearTipoEquipo = async (tipoEquipoRequest) => {
-  let tipoEquipo = new TipoEquipo();
-  tipoEquipo.nombre = tipoEquipoRequest.nombre;
-  tipoEquipo.estado = tipoEquipoRequest.estado;
-  tipoEquipo.fechaCreacion = new Date();
-  tipoEquipo.fechaActualizacion = new Date();
-  await tipoEquipo.save();
+  tipoEquipoRequest.fechaCreacion = new Date();
+  tipoEquipoRequest.fechaActualizacion = new Date();
+  await TipoEquipo.create(tipoEquipoRequest);
 }
 
 export const editarTipoEquipo = async (tipoEquipoId, tipoEquipoRequest) => {
   tipoEquipoRequest.fechaActualizacion = new Date();
   await TipoEquipo.findByIdAndUpdate(tipoEquipoId, tipoEquipoRequest);
+}
+
+export const eliminarTipoEquipo = async (id) => {
+  let tipoEquipoEliminado = await TipoEquipo.findByIdAndDelete(id);
+  return (tipoEquipoEliminado !== null) ? {deleted: true} : {deleted: false};
 }

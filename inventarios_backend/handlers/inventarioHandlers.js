@@ -1,6 +1,7 @@
 import { 
   crearInventario, 
   editarInventario, 
+  eliminarInventario, 
   listarInventarios, 
   obtenerInventarioPorId 
   } from "../controllers/inventarioControllers.js";
@@ -17,7 +18,7 @@ export const listarInventariosHandler = async (req, res) => {
 
 export const obtenerInventarioPorIdHandler = async (req, res) => {
   try {
-    const inventario = await obtenerInventarioPorId(req.params.inventarioId);
+    const inventario = await obtenerInventarioPorId(req.params.id);
     if(!inventario) {
       return res.status(400).send({message: 'No existe este inventario'});
     }
@@ -60,12 +61,24 @@ export const editarInventarioHandler = async (req, res) => {
         .status(400)
         .json({message: 'Ya existe el serial indicado en otro equipo'});
     }
-    await editarInventario(req.params.inventarioId, req.body);
+    await editarInventario(req.params.id, req.body);
     return res.status(201).json({success: true});
   } catch (error) {
     console.log(error);
     return res
       .status(500)
       .send({message: 'Ocurrio un error al actualizar este inventario'});
+  }
+}
+
+export const eliminarInventarioHandler = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const result = await eliminarInventario(id);
+    if(!result.deleted) return res.status(400).json({error: "EstadoEquipo inexistente"});
+    return res.status(200).json(result);    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({error: "Algo salió mal"})
   }
 }

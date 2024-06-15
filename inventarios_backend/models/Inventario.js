@@ -10,7 +10,7 @@ const InventarioSchema = Schema({
     type: String,
     required: true,
   },
-  description: {
+  descripcion: {
     type: String,
     required: true,
   },

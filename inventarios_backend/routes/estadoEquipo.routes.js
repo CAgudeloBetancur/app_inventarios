@@ -1,10 +1,15 @@
 import { Router } from 'express';
-import { check } from 'express-validator';
 import { 
   listarEstadosEquipoHandler, 
   crearEstadoEquipoHandler, 
-  editarEstadoEquipoHandler 
+  editarEstadoEquipoHandler, 
+  eliminarEstadoEquipoHandler
   } from '../handlers/estadoEquipoHandlers.js';
+import { 
+  validacionesMetodoPostEstadoEquipo,
+  validacionesMetodoPutEstadoEquipo
+  } from './../validations/modelsRequests/validationsByModel/validarEstadoEquipoRequests.js'
+import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 
 const estadoEquipoRouter = Router();
 
@@ -16,22 +21,22 @@ estadoEquipoRouter.get('/', listarEstadosEquipoHandler);
 
 estadoEquipoRouter.post(
   '/',
-  [
-    check('nombre', 'nombre.required').not().isEmpty(),
-    check('estado', 'estado.required').isIn(['Activo', 'Inactivo'])
-  ],
+  validacionesMetodoPostEstadoEquipo,
   crearEstadoEquipoHandler
 );
 
 // ? Eliminar un estado de equipo
 
 estadoEquipoRouter.put(
-  '/:estadoEquipoId',
-  [
-    check('nombre', 'nombre.required').not().isEmpty(),
-    check('estado', 'estado.required').isIn(['Activo', 'Inactivo'])
-  ],
+  '/:id',
+  validacionesMetodoPutEstadoEquipo,
   editarEstadoEquipoHandler
+);
+
+estadoEquipoRouter.delete(
+  '/:id',
+  validarParametroIdEnUrl,
+  eliminarEstadoEquipoHandler
 );
 
 export default estadoEquipoRouter;
