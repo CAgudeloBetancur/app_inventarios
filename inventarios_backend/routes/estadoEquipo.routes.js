@@ -10,6 +10,7 @@ import {
   validacionesMetodoPutEstadoEquipo
   } from './../validations/modelsRequests/validationsByModel/validarEstadoEquipoRequests.js'
 import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import EstadoEquipo from '../models/EstadoEquipo.js';
 
 const estadoEquipoRouter = Router();
 
@@ -35,7 +36,7 @@ estadoEquipoRouter.put(
 
 estadoEquipoRouter.delete(
   '/:id',
-  validarParametroIdEnUrl,
+  validarParametroIdEnUrl(EstadoEquipo),
   eliminarEstadoEquipoHandler
 );
 

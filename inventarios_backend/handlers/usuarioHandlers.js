@@ -32,13 +32,6 @@ export const listarUsuariosHandler = async (req, res) => {
 
 export const editarUsuarioHandler = async (req, res) => {
   try {
-    let existeEmail = await Usuario.findOne({
-      email: req.body.email, 
-      _id: { $ne: usuario._id }
-    });
-    if(existeEmail) {
-      return res.status(400).json({message: 'Este Email ya existe'})
-    }
     await editarUsuario(req.params.id, req.body);
     return res.status(201).json({success: true});
   } catch (error) {

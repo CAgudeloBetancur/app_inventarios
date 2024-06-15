@@ -17,7 +17,7 @@ export const refreshToken = async (userPayload) => {
   const accessToken = jwt.sign(
     userPayload, 
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10m"}
+    {expiresIn: "10m"}
   );
   return accessToken;
 }

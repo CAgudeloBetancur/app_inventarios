@@ -7,6 +7,7 @@ import {
   } from '../handlers/marcaHandlers.js';
 import { validacionesMetodoPostMarca, validacionesMetodoPutMarca } from '../validations/modelsRequests/validationsByModel/validarMarcaRequests.js';
 import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import Marca from '../models/Marca.js';
 
 const marcaRouter = Router();
 
@@ -32,7 +33,7 @@ marcaRouter.put(
 
 marcaRouter.delete(
   '/:id',
-  validarParametroIdEnUrl,
+  validarParametroIdEnUrl(Marca),
   eliminarMarcaHandler
 );
 

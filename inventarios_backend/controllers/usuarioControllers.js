@@ -1,15 +1,12 @@
 import Usuario from "../models/Usuario.js";
 import bcrypt from 'bcrypt';
+import UsuarioToken from "../models/UsuarioToken.js";
 
 export const listarUsuarios = async () => {
   return await Usuario.find();
 }
 
 export const crearUsuario = async (usuarioRequest) => {
-  const emailExistente = await Usuario.findOne({email: usuarioRequest.email});
-  if(emailExistente) {
-    throw Error('Este email ya existe');
-  }
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(usuarioRequest.password, salt);
   usuarioRequest.password = hash;
@@ -26,5 +23,9 @@ export const editarUsuario = async (usuarioId, usuarioRequest) => {
 
 export const eliminarUsuario = async (id) => {
   let usuarioEliminado = await Usuario.findByIdAndDelete(id);
-  return (usuarioEliminado !== null) ? {deleted: true} : {deleted: false};
+  if(usuarioEliminado) {
+    await UsuarioToken.findOneAndDelete( {usuarioId: id} );
+    return {deleted: true};
+  }
+  return {deleted: false};
 }

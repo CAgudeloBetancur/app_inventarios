@@ -33,13 +33,6 @@ export const obtenerInventarioPorIdHandler = async (req, res) => {
 
 export const crearInventarioHandler = async (req, res) => {
   try {
-    const inventarioExistentePorSerial = await Inventario
-      .findOne({serial: req.body.serial});
-    if(inventarioExistentePorSerial) {
-      return res
-        .status(400)
-        .json({message: 'Ya existe el serial indicado en otro equipo'});
-    }
     await crearInventario(req.body);
     res.status(201).json({success: true});
   } catch (error) {
@@ -52,15 +45,6 @@ export const crearInventarioHandler = async (req, res) => {
 
 export const editarInventarioHandler = async (req, res) => {
   try {
-    const inventarioExistentePorSerial = await Inventario.findOne({
-      serial: req.body.serial, 
-      _id: {$ne: inventario._id}
-    });
-    if(inventarioExistentePorSerial) {
-      return res
-        .status(400)
-        .json({message: 'Ya existe el serial indicado en otro equipo'});
-    }
     await editarInventario(req.params.id, req.body);
     return res.status(201).json({success: true});
   } catch (error) {

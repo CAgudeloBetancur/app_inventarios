@@ -1,5 +1,6 @@
 import { validarRefreshToken } from "../validations/auth/validarRefreshToken.js";
 import { logIn, refreshToken } from "../controllers/authControllers.js";
+import { crearTokens } from "../utils/jwtUtils.js";
 
 export const logInHandler = async (req, res) => {
   try {

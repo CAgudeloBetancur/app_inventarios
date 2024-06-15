@@ -12,6 +12,7 @@ import {
   validacionesMetodoPostInventario 
   } from '../validations/modelsRequests/validationsByModel/validarInventarioRequests.js';
 import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import Inventario from '../models/Inventario.js';
 
 const inventarioRouter = Router();
 
@@ -29,7 +30,7 @@ inventarioRouter.use( validarRolesUsuario(["Administrador"]) )
 
 inventarioRouter.get(
   '/:id', 
-  validarParametroIdEnUrl,
+  validarParametroIdEnUrl(Inventario),
   obtenerInventarioPorIdHandler
 );
 
@@ -51,7 +52,7 @@ inventarioRouter.put(
 
 inventarioRouter.delete(
   '/:id',
-  validarParametroIdEnUrl,
+  validarParametroIdEnUrl(Inventario),
   eliminarInventarioHandler
 );
 

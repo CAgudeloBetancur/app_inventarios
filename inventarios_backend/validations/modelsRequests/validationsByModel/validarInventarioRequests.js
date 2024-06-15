@@ -8,10 +8,6 @@ import TipoEquipo from './../../../models/TipoEquipo.js';
 import EstadoEquipo from './../../../models/EstadoEquipo.js';
 import Inventario from '../../../models/Inventario.js';
 
-const idValidoParaMongo = (id) => {
-  return !(/^[0-9a-fA-F]{24}$/).test(id);
-} 
-
 // tipoMsg --> 1 = no existe | 2 = existe, pero Inactivo
 const crearMensaje = (tipoMsg, id, propiedad) => {
   const msgP1 = "El _id"
@@ -24,21 +20,16 @@ const crearMensaje = (tipoMsg, id, propiedad) => {
 const validarFormatoYReferenciaAOtrosModelos = modelo => {
   return async (value, obj) => {
     const prop = obj.path.split('.')[0];
-    if (typeof value !== 'object') {
-      throw new Error(`La propiedad ${prop} debe ser un objeto con una propiedad _id`);
-    }
-    if (!value.hasOwnProperty('_id')) {
-      throw new Error(`La propiedad ${prop} debe contener una propiedad _id`);
-    }
-    if (idValidoParaMongo(value._id)) {
-      throw new Error(`La propiedad _id dentro de ${prop} debe ser un ID válido de MongoDB`);
-    }
-    const resultado = await modelo.findById({_id: value._id});
-    if(!resultado) throw new Error(crearMensaje(1, value._id, prop));
-    if(resultado.estado !== 'Activo') throw new Error(crearMensaje(2, value._id, obj.path));
+    const resultado = await modelo.findById({_id: value});
+    if(!resultado) throw new Error(crearMensaje(1, value, prop));
+    if(resultado.estado !== 'Activo') throw new Error(crearMensaje(2, value, obj.path));
     return true;
   }
 }
+
+const idValidoParaMongo = (id) => {
+  return (/^[0-9a-fA-F]{24}$/).test(id);
+} 
 
 const validarSerial = modelo => {
   return async (value, {req}) => {
@@ -46,6 +37,20 @@ const validarSerial = modelo => {
       const serialDuplicado = await modelo.findOne({serial: value});   
       if(serialDuplicado) {
         throw new Error('Serial duplicado; ya existe en la base de datos y debe ser único');
+      } 
+    }
+    if(req.method === 'PUT') {
+      if(idValidoParaMongo(req.params.id)) {
+        const elementoExistente = await modelo.findById(req.params.id);
+        if(elementoExistente) {
+          const serialExistente = await modelo.findOne({
+            serial: value,
+            _id: {$ne: elementoExistente._id}
+          });
+          if(serialExistente) {
+            throw new Error('Serial duplicado; ya existe en la base de datos y debe ser único');
+          }
+        }
       } 
     }
   }
@@ -88,9 +93,10 @@ const validarPropiedadesExistentesEnBody = [
     .isFloat({min:0}),
   check('marca', 'No se envió la propiedad marca, o se envió vacía')
     .exists()
-    .withMessage()
     .bail()
     .notEmpty()
+    .bail()
+    .isMongoId()
     .bail()
     .custom(validarFormatoYReferenciaAOtrosModelos(Marca)),
   check('tipoEquipo', 'No se envió la propiedad tipoEquipo, o se envió vacía')
@@ -98,17 +104,23 @@ const validarPropiedadesExistentesEnBody = [
     .bail()
     .notEmpty()
     .bail()
+    .isMongoId()
+    .bail()
     .custom(validarFormatoYReferenciaAOtrosModelos(TipoEquipo)),
   check('usuario', 'No se envió la propiedad usuario, o se envió vacía')
     .exists()
     .bail()
     .notEmpty()
     .bail()
+    .isMongoId()
+    .bail()
     .custom(validarFormatoYReferenciaAOtrosModelos(Usuario)),
   check('estadoEquipo', 'No se envió la propiedad estadoEquipo, o se envió vacía')
     .exists()
     .bail()
     .notEmpty()
+    .bail()
+    .isMongoId()
     .bail()
     .custom(validarFormatoYReferenciaAOtrosModelos(EstadoEquipo))
 ];
@@ -118,5 +130,5 @@ export const validacionesMetodoPostInventario = ejecutarCadenaDeValidaciones(
 );
 
 export const validacionesMetodoPutInventario = ejecutarCadenaDeValidaciones(
-  [...validarParametroIdEnUrl, ...validarPropiedadesExistentesEnBody]
+  [...validarParametroIdEnUrl(Inventario), ...validarPropiedadesExistentesEnBody]
 );

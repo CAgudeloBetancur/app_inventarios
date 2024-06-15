@@ -6,12 +6,11 @@ export const ejecutarCadenaDeValidaciones = (cadenaDeValidaciones) => {
     Promise.all(listaEjecutablesDeValidaciones)
       .then(() => {
         const errors = validationResult(req);
-        console.log(validationResult(req).array())
         if(!errors.isEmpty()) {
           return res.status(400).json({errors: errors.array({ onlyFirstError: true })});
         }
         next();
       })
-      .catch(next);    
+      .catch(next);  
   }
 }
