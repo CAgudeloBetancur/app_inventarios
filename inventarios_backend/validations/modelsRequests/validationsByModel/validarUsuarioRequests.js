@@ -13,12 +13,17 @@ const validarEmailExistente = () => {
       }
     }
     if(req.method === 'PUT') {
-      let emailExistente = await Usuario.findOne({
-        email: req.body.email, 
-        _id: { $ne: usuario._id } // diferente al usuario actual
-      });
-      if(emailExistente) {
-        throw new Error ('Este Email ya está en uso por otro usuario');
+      if(idValidoParaMongo(req.res.id)) {
+        const usuarioExistente = await Usuario.findByid(req.params.id);
+        if(usuarioExistente) {
+          let emailExistente = await Usuario.findOne({
+            email: req.body.email, 
+            _id: { $ne: usuarioExistente._id } // diferente al usuario actual
+          });
+          if(emailExistente) {
+            throw new Error ('Este Email ya está en uso por otro usuario');
+          }
+        }
       }
     }
   }

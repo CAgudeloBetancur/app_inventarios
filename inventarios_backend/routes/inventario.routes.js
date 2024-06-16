@@ -26,7 +26,7 @@ inventarioRouter.get(
   listarInventariosHandler
 );
 
-inventarioRouter.use( validarRolesUsuario(["Administrador"]) )
+inventarioRouter.use(validarRolesUsuario(["Administrador"]))
 
 // ? inventario por Id
 

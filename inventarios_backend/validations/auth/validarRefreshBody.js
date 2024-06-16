@@ -8,6 +8,7 @@ const validarPropiedadesExistentesEnBody = [
     .exists()
     .bail()
     .notEmpty()
+    .bail()
     .isJWT()
 ]
 
