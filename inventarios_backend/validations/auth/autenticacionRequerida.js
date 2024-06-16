@@ -17,6 +17,6 @@ export const autenticacionRequerida = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).json('Ha ocurrido un error');
+    return res.status(500).json({error: error.message});
   }
 }

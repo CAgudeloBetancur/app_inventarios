@@ -21,7 +21,7 @@ export const crearEstadoEquipoHandler = async (req, res) => {
     res.status(201).json({success: true});
   } catch (error) {
     console.log(error);
-    return res.status(500).send('Ocurrio un error');
+    return res.status(500).send({error: 'Ocurrio un error'});
   }
 }
 
@@ -31,7 +31,7 @@ export const editarEstadoEquipoHandler = async (req, res) => {
     res.status(201).json({success: true});
   } catch (error) {
     console.log(error);
-    return res.status(500).send('Ocurrio un error');
+    return res.status(500).send({error: 'Ocurrio un error'});
   }
 }
 
@@ -39,7 +39,14 @@ export const eliminarEstadoEquipoHandler = async (req, res) => {
   try {
     const {id} = req.params;
     const result = await eliminarEstadoEquipo(id);
-    if(!result.deleted) return res.status(400).json({error: "EstadoEquipo inexistente"});
+    if(!result.deleted) {
+      if(result.referencias) {
+        return res.status(400).json({
+          error: `No se puede eliminar este registro porque está referenciado por ${result.referencias} inventario(s)`
+        });
+      }
+      return res.status(400).json({error: "estadoEquipo inexistente"});
+    }
     return res.status(200).json(result);    
   } catch (error) {
     console.log(error);

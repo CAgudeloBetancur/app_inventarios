@@ -5,8 +5,13 @@ import {
   listarTipoEquipoHandler, 
   eliminarTipoEquipoHandler
   } from '../handlers/tipoEquipoHandlers.js';
-import { validacionesMetodoPostTipoEquipo, validacionesMetodoPutTipoEquipo } from '../validations/modelsRequests/validationsByModel/validarTipoEquipoRequests.js';
-import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import { 
+  validacionesMetodoPostTipoEquipo, 
+  validacionesMetodoPutTipoEquipo 
+  } from '../validations/modelsRequests/validationsByModel/validarTipoEquipoRequests.js';
+import { 
+  validarParametroIdEnUrl 
+  } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 import TipoEquipo from '../models/TipoEquipo.js';
 
 const tipoEquipoRouter = Router();

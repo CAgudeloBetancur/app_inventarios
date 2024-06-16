@@ -11,7 +11,7 @@ export const listarTipoEquipoHandler = async (req, res) => {
     return res.status(200).json(listaTiposEquipo);
   } catch (error) {    
     console.log(error);
-    return res.status(500).send('Ocurrio un error en el servidor');
+    return res.status(500).send({error: 'Ocurrio un error en el servidor'});
   }
 }
 
@@ -21,7 +21,7 @@ export const crearTipoEquipoHandler = async (req, res) => {
     return res.status(201).json({success: true});      
   } catch (error) {      
     console.log(error);
-    return res.status(500).send('Ocurrio un error');
+    return res.status(500).send({error: 'Ocurrio un error'});
   }
 }
 
@@ -31,7 +31,7 @@ export const editarTipoEquipoHandler = async (req, res) => {
     return res.status(201).json({success: true});
   } catch (error) {
     console.log(error);
-    return res.status(500).send('Ocurrio un error');
+    return res.status(500).send({error: 'Ocurrio un error'});
   }
 }
 
@@ -39,7 +39,14 @@ export const eliminarTipoEquipoHandler = async (req, res) => {
   try {
     const {id} = req.params;
     const result = await eliminarTipoEquipo(id);
-    if(!result.deleted) return res.status(400).json({error: "EstadoEquipo inexistente"});
+    if(!result.deleted) {
+      if(result.referencias) {
+        return res.status(400).json({
+          error: `No se puede eliminar este registro porque está referenciado por ${result.referencias} inventario(s)`
+        });
+      }
+      return res.status(400).json({error: "tipoEquipo inexistente"});
+    }
     return res.status(200).json(result);    
   } catch (error) {
     console.log(error);

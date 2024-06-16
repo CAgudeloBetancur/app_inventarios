@@ -11,7 +11,9 @@ import {
   validacionesMetodoPutInventario, 
   validacionesMetodoPostInventario 
   } from '../validations/modelsRequests/validationsByModel/validarInventarioRequests.js';
-import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import { 
+  validarParametroIdEnUrl 
+  } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 import Inventario from '../models/Inventario.js';
 
 const inventarioRouter = Router();

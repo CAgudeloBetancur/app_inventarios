@@ -51,7 +51,7 @@ export const editarInventarioHandler = async (req, res) => {
     console.log(error);
     return res
       .status(500)
-      .send({message: 'Ocurrio un error al actualizar este inventario'});
+      .send({error: 'Ocurrio un error al actualizar este inventario'});
   }
 }
 
@@ -59,7 +59,7 @@ export const eliminarInventarioHandler = async (req, res) => {
   try {
     const {id} = req.params;
     const result = await eliminarInventario(id);
-    if(!result.deleted) return res.status(400).json({error: "EstadoEquipo inexistente"});
+    if(!result.deleted) return res.status(400).json({error: "inventario inexistente"});
     return res.status(200).json(result);    
   } catch (error) {
     console.log(error);

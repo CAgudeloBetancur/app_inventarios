@@ -5,8 +5,13 @@ import {
   crearUsuarioHandler,
   eliminarUsuarioHandler
   } from '../handlers/usuarioHandlers.js';
-import { validacionesMetodoPostUsuario, validacionesMetodoPutUsuario } from '../validations/modelsRequests/validationsByModel/validarUsuarioRequests.js';
-import { validarParametroIdEnUrl } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
+import { 
+  validacionesMetodoPostUsuario, 
+  validacionesMetodoPutUsuario 
+  } from '../validations/modelsRequests/validationsByModel/validarUsuarioRequests.js';
+import { 
+  validarParametroIdEnUrl 
+  } from '../validations/modelsRequests/commonValidations/validarParametroIdEnUrl.js';
 import Usuario from '../models/Usuario.js';
 
 const usuarioRouter = Router();

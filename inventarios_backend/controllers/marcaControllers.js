@@ -1,3 +1,4 @@
+import Inventario from "../models/Inventario.js";
 import Marca from "../models/Marca.js";
 
 export const listarMarcas = async () => {
@@ -16,6 +17,8 @@ export const editarMarca = async (marcaId, marcaRequest) => {
 }
 
 export const eliminarMarca = async (id) => {
+  const conteoReferencias = await Inventario.countDocuments({marca: id});
+  if(conteoReferencias > 0) return {deleted: false, referencias: conteoReferencias}
   let marcaEliminada = await Marca.findByIdAndDelete(id);
   return (marcaEliminada !== null) ? {deleted: true} : {deleted: false};
 }
