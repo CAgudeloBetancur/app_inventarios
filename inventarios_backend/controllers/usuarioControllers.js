@@ -18,6 +18,9 @@ export const crearUsuario = async (usuarioRequest) => {
 }
 
 export const editarUsuario = async (usuarioId, usuarioRequest) => {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(usuarioRequest.password, salt);
+  usuarioRequest.password = hash;
   usuarioRequest.fechaActualizacion = new Date();
   const usuario = await Usuario.findByIdAndUpdate(usuarioId, usuarioRequest, {new: true});
   return {_id: usuario._id, rol: usuario.rol}

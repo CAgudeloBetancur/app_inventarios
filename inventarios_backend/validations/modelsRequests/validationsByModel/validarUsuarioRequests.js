@@ -4,6 +4,10 @@ import { ejecutarCadenaDeValidaciones } from '../../ejecutarCadenaDeValidaciones
 import { validarParametroIdEnUrl } from '../commonValidations/validarParametroIdEnUrl.js';
 import Usuario from '../../../models/Usuario.js';
 
+const idValidoParaMongo = (id) => {
+  return (/^[0-9a-fA-F]{24}$/).test(id);
+}
+
 const validarEmailExistente = () => {
   return async (value, {req}) => {
     if(req.method === 'POST') {
